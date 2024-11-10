@@ -22,7 +22,7 @@ def logout_view(request):
     return render(request, 'relationship_app/logout.html')
 
 # User Registration view (using Django's built-in UserCreationForm)
-def register_view(request):
+def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)
         if form.is_valid():
