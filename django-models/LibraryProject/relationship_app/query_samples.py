@@ -1,38 +1,26 @@
-# relationship_app/query_samples.py
 from relationship_app.models import Author, Book, Library, Librarian
 
-# Query 1: All books by a specific author
-def books_by_author(author_name):
-    try:
-        author = Author.objects.get(name=author_name)
-        books = Book.objects.filter(author=author)
-        for book in books:
-            print(book.title)
-    except Author.DoesNotExist:
-        print(f"No author found with the name '{author_name}'")
+#Query all books by a specific author.
+author_name = "author.name"
+author = Author.objects.get(name=author_name)
+books = Book.objects.filter(author=author)
+print(f"Books: by {author.name}")
+for book in books:
+    print(f" -{book.title}")
 
-# Query 2: List all books in a library
-def books_in_library(library_name):
-    try:
-        library = Library.objects.get(name=library_name)
-        books = library.books.all()  # Many-to-Many relation
-        for book in books:
-            print(book.title)
-    except Library.DoesNotExist:
-        print(f"No library found with the name '{library_name}'")
 
-# Query 3: Retrieve the librarian for a library using Librarian.objects.get
-def librarian_for_library(library_name):
-    try:
-        library = Library.objects.get(name=library_name)
-        librarian = Librarian.objects.get(library=library)  # One-to-One relation through library
-        print(f"Librarian for {library_name}: {librarian.name}")
-    except Library.DoesNotExist:
-        print(f"No library found with the name '{library_name}'")
-    except Librarian.DoesNotExist:
-        print(f"No librarian assigned to the library '{library_name}'")
+#List all books in a library.
+library_name = "library.name"
+library = Library.objects.get(name=library_name)
+books = library.books.all()
+print(f"Books in {library.name}: ")
+for book in books:
+    print(f" -{book.title}").objects.all()
 
-# Example usage:
-# books_by_author('J.K. Rowling')
-# books_in_library('City Library')
-# librarian_for_library('City Library')
+
+#Retrieve the librarian for a library
+librarian_name = "librarian.name"
+librarian = Librarian.objects.get(library=librarian_name)
+library = librarian.library
+for librarian in library:
+    print(f"Librarian: {librarian.name}) for ({library.name})")
