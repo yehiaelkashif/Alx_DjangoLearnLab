@@ -1,14 +1,20 @@
-from django.contrib.auth import login
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import messages
-from django.shortcuts import render, redirect
-def register(request):
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your account has been created! You can now log in.')
-            return redirect('login')
-    else:
-        form = UserCreationForm()
-    return render(request, 'register.html', {'form': form})
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from .views import check_role
+
+
+
+def check_role(user, role):
+    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == role
+
+@user_passes_test(lambda u: check_role(u, 'Librarian'))
+def librarian_dashboard(request):
+    return render(request, 'librarian_dashboard.html', {'message': 'Welcome, Librarian!'})
+
+from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
+from .views import check_role
+
+@user_passes_test(lambda u: check_role(u, 'Member'))
+def member_dashboard(request):
+    return render(request, 'member_dashboard.html', {'message': 'Welcome, Member!'})
